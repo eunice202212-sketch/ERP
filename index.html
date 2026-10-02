@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>手機盤點 Web App</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body { font-family: -apple-system, sans-serif; padding: 15px; background: #f4f5f7; margin: 0; }
+    .card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    #reader { width: 100%; border-radius: 8px; overflow: hidden; }
+    input, button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; }
+    button { background: #007aff; color: white; border: none; font-weight: bold; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <h2>📱 手機盤點測試</h2>
+  
+  <div class="card">
+    <h3>1. 條碼掃描區</h3>
+    <div id="reader"></div>
+  </div>
+
+  <div class="card">
+    <h3>2. 盤點錄入</h3>
+    <label>條碼：</label>
+    <input type="text" id="barcode" placeholder="掃描後自動帶入">
+    <label>數量：</label>
+    <input type="number" id="qty" value="1">
+    <button onclick="addRecord()">新增記錄</button>
+  </div>
+
+  <div class="card">
+    <h3>已盤點暫存清單</h3>
+    <ul id="list"></ul>
+  </div>
+
+  <script>
+    function onScanSuccess(decodedText) {
+      document.getElementById('barcode').value = decodedText;
+    }
+    let html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: { width: 250, height: 150 } });
+    html5QrcodeScanner.render(onScanSuccess);
+
+    function addRecord() {
+      let code = document.getElementById('barcode').value;
+      let qty = document.getElementById('qty').value;
+      if(!code) return alert('請先掃描條碼！');
+      
+      let li = document.createElement('li');
+      li.innerText = `條碼: ${code} | 數量: ${qty}`;
+      document.getElementById('list').appendChild(li);
+      
+      document.getElementById('barcode').value = '';
+      document.getElementById('qty').value = '1';
+    }
+  </script>
+</body>
+</html>
